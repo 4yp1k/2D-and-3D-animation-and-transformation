@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Все анимации в одном месте</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 40px 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+            gap: 40px;
+            justify-items: center;
+            align-items: start;
+            min-height: 100vh;
+        }
+
+        .project-wrapper {
+            background: #1e1e1e;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 550px;
+        }
+
+        .project-title {
+            font-size: 18px;
+            color: #a0a0a0;
+            margin-bottom: 20px;
+            width: 100%;
+            text-align: left;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+
+        .cat-container {
+            width: min(446px, 92vw);
+            aspect-ratio: 446 / 466;
+            background: #161616;
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .cat-container .ear {
+            position: absolute;
+            width: 21.9%;
+            height: 38.5%;
+            top: 8%;
+        }
+        .cat-container .ear.left { left: 12.8%; }
+        .cat-container .ear.right { right: 9%; transform: scaleX(-1); }
+        .cat-container .eye {
+            position: absolute;
+            top: 47%;
+            width: 21.5%;
+            height: 17.2%;
+            background: #fff;
+            border-radius: 50%;
+            overflow: hidden;
+            animation: blink 6s ease-in-out infinite;
+        }
+        .cat-container .eye.left { left: 18.4%; }
+        .cat-container .eye.right { right: 16.6%; }
+        .cat-container .pupil {
+            position: absolute;
+            width: 20%;
+            height: 46%;
+            background: #161616;
+            border-radius: 50%;
+            top: 26%;
+            animation: look 6s ease-in-out infinite;
+        }
+        .cat-container .eye.left .pupil { left: 48%; }
+        .cat-container .eye.right .pupil { left: 32%; }
+        .cat-container .pupil::after {
+            content: "";
+            position: absolute;
+            width: 32%;
+            height: 22%;
+            background: #fff;
+            border-radius: 50%;
+            top: 22%;
+            left: 18%;
+        }
+        .cat-container .nose {
+            position: absolute;
+            left: 46.3%;
+            top: 65.8%;
+            width: 8.7%;
+            height: 4%;
+            background: #fff;
+            border-radius: 30% 30% 70% 70%;
+        }
+        .cat-container .mouth {
+            position: absolute;
+            left: 53%;
+            top: 80%;
+            width: 15.5%;
+            height: 6.2%;
+            background: #fff;
+            border-radius: 50%;
+            animation: mouth 6s ease-in-out infinite;
+        }
+        @keyframes blink {
+            0%, 8%, 14%, 100% { transform: scaleY(1); }
+            10%, 12% { transform: scaleY(0.06); }
+        }
+        @keyframes look {
+            0%, 22%, 100% { transform: translateX(0); }
+            34%, 46% { transform: translateX(-130%); }
+            58%, 70% { transform: translateX(120%); }
+            82% { transform: translateX(0); }
+        }
+        @keyframes mouth {
+            0%, 28%, 100% { transform: translateX(-50%) scale(1, 1); }
+            40% { transform: translateX(-50%) scale(1.18, 0.72); }
+            52% { transform: translateX(-50%) scale(0.92, 1.4); }
+            64% { transform: translateX(-50%) scale(1.08, 0.86); }
+        }
+
+        .clock-card {
+            background-color: #ffffff;
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border-radius: 12px;
+        }
+        .clock-card .title {
+            font-size: 20px;
+            color: #333;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+            margin-bottom: 40px;
+        }
+        .clock-container {
+            width: 320px;
+            height: 320px;
+            position: relative;
+            margin: 0 auto;
+            border-radius: 50%;
+            border: 1px solid #d8a5b4;
+        }
+        .clock-face {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover; 
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        .clock-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            z-index: 10;
+        }
+        .clock-card .hand {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            transform-origin: bottom center;
+            border-radius: 10px;
+        }
+        .hour-hand {
+            width: 6px;
+            height: 70px;
+            background-color: #1a1a1a;
+            animation: clock-rotate 43200s steps(60) infinite;
+            animation-delay: -36600s; 
+        }
+        .minute-hand {
+            width: 4px;
+            height: 110px;
+            background-color: #1a1a1a;
+            margin-left: -2px;
+            animation: clock-rotate 3600s steps(60) infinite;
+            animation-delay: -600s;
+        }
+        .second-hand {
+            width: 2px;
+            height: 125px;
+            background-color: #e55a4b;
+            margin-left: 0px;
+            bottom: 0px; 
+            z-index: 11;
+            animation: clock-rotate 60s steps(60) infinite;
+            animation-delay: 0s; 
+        }
+        .center-dot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 8px;
+            height: 8px;
+            background-color: #1a1a1a;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 20;
+        }
+        @keyframes clock-rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .space-container {
+            width: 500px; height: 500px;
+            background-color: #192433;
+            display: flex; justify-content: center; align-items: center;
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .space-circle {
+            width: 420px; height: 420px;
+            background-color: #23466b;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
+        .space-circle .star {
+            position: absolute; background-color: #ffffff; border-radius: 50%;
+            animation: twinkle 2s infinite ease-in-out;
+        }
+        .space-circle .star:nth-child(1) { width: 6px; height: 6px; top: 70px; left: 120px; animation-delay: 0s; }
+        .space-circle .star:nth-child(2) { width: 4px; height: 4px; top: 150px; left: 80px; animation-delay: 0.5s; }
+        .space-circle .star:nth-child(3) { width: 5px; height: 5px; top: 320px; left: 100px; animation-delay: 1.2s; }
+        .space-circle .star:nth-child(4) { width: 4px; height: 4px; top: 350px; left: 280px; animation-delay: 0.8s; }
+        .space-circle .star:nth-child(5) { width: 5px; height: 5px; top: 310px; left: 310px; animation-delay: 1.8s; }
+        
+        .planet {
+            position: absolute; width: 160px; height: 160px;
+            background-color: #f2994a; border-radius: 50%;
+            top: 60px; right: 40px; overflow: hidden;
+        }
+        .planet-cloud { position: absolute; background-color: #f4c74c; border-radius: 20px; opacity: 0.8; }
+        .cloud-1 { width: 70px; height: 12px; top: 30px; left: 20px; }
+        .cloud-2 { width: 100px; height: 15px; top: 60px; right: -10px; }
+        .cloud-3 { width: 80px; height: 12px; top: 90px; left: 10px; }
+        .cloud-4 { width: 50px; height: 10px; top: 120px; right: 20px; }
+
+        .astronaut {
+            position: absolute; top: 45%; left: 45%;
+            width: 100px; height: 150px;
+            transform: translate(-50%, -50%) rotate(-15deg);
+            animation: float 4s infinite ease-in-out;
+            z-index: 10;
+        }
+        .backpack {
+            position: absolute; width: 70px; height: 60px;
+            background-color: #e0e0e0; border-radius: 10px;
+            top: 50px; left: 20px; z-index: 1;
+        }
+        .astronaut .body {
+            position: absolute; width: 60px; height: 70px;
+            background-color: #ffffff; border-radius: 20px 20px 15px 15px;
+            top: 60px; left: 20px; z-index: 3;
+            display: flex; justify-content: center; align-items: center; gap: 4px;
+        }
+        .btn { width: 6px; height: 6px; border-radius: 50%; margin-top: 10px; }
+        .btn-blue { background-color: #4c6cd7; }
+        .btn-red { background-color: #eb5757; }
+        .btn-yellow { background-color: #f2c94c; }
+
+        .leg-left {
+            position: absolute; width: 22px; height: 65px;
+            background-color: #ffffff; border-radius: 10px;
+            top: 115px; left: 12px;
+            transform: rotate(20deg); z-index: 2;
+        }
+        .leg-left::after {
+            content: ''; position: absolute;
+            bottom: -8px; left: -2px; width: 25px; height: 18px;
+            background-color: #ffffff; border-radius: 8px 8px 6px 6px;
+            border-bottom: 6px solid #ef5a46;
+            box-shadow: inset 0 2px 0 #d1d1d1;
+        }
+        .leg-right {
+            position: absolute; width: 22px; height: 65px;
+            background-color: #ffffff; border-radius: 10px;
+            top: 115px; left: 67px;
+            transform: rotate(-25deg); z-index: 2;
+        }
+        .leg-right::after {
+            content: ''; position: absolute;
+            bottom: -8px; left: -2px; width: 25px; height: 18px;
+            background-color: #ffffff; border-radius: 8px 8px 6px 6px;
+            border-bottom: 6px solid #ef5a46;
+            box-shadow: inset 0 2px 0 #d1d1d1;
+        }
+
+        .arm-left {
+            position: absolute; top: 50px; left: -10px;
+            width: 16px; height: 60px; z-index: 4;
+        }
+        .arm-left .upper {
+            width: 16px; height: 50px; background-color: #ffffff;
+            border-radius: 8px; transform: rotate(45deg); transform-origin: bottom center;
+        }
+        .arm-left .lower {
+            position: absolute; top: 10px; left: 2px;
+            width: 16px; height: 40px; background-color: #ffffff;
+            border-radius: 8px; transform: rotate(-10deg);
+        }
+        .arm-left .lower::before {
+            content: ''; position: absolute;
+            top: 5px; left: 0; width: 100%; height: 6px; background-color: #ef5a46;
+        }
+        .arm-left .lower::after {
+            content: ''; position: absolute;
+            top: -8px; left: 0; width: 16px; height: 16px; background-color: #ffffff; border-radius: 50% 50% 0% 0%;
+        }
+
+        .arm-right {
+            position: absolute; top: 50px; left: 95px;
+            width: 16px; height: 60px; z-index: 4;
+        }
+        .arm-right .upper {
+            width: 16px; height: 50px; background-color: #ffffff;
+            border-radius: 8px; transform: rotate(-45deg); transform-origin: bottom center;
+        }
+        .arm-right .lower {
+            position: absolute; top: 8px; left: -2px;
+            width: 16px; height: 40px; background-color: #ffffff;
+            border-radius: 8px; transform: rotate(10deg);
+        }
+        .arm-right .lower::before {
+            content: ''; position: absolute;
+            top: 5px; left: 0; width: 100%; height: 6px; background-color: #ef5a46;
+        }
+        .arm-right .lower::after {
+            content: ''; position: absolute;
+            top: -8px; left: 0; width: 16px; height: 16px; background-color: #ffffff; border-radius: 50% 50% 0% 0%;
+        }
+
+        .helmet {
+            position: absolute; width: 70px; height: 70px;
+            background-color: #ffffff; border-radius: 50%;
+            top: 5px; left: 15px; z-index: 5;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .visor {
+            width: 50px; height: 50px; background-color: #4a4d50;
+            border-radius: 50%; position: relative;
+        }
+        .visor::after {
+            content: ''; position: absolute;
+            width: 20px; height: 10px; background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%; top: 10px; left: 10px; transform: rotate(-30deg);
+        }
+        .tether-svg {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%; overflow: visible;
+            z-index: 3; pointer-events: none;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        @keyframes float {
+            0%, 100% { transform: translate(-50%, -50%) rotate(-15deg); }
+            50% { transform: translate(-50%, -60%) rotate(-5deg); }
+        }
+
+        .tardis-scene {
+            width: 500px;
+            height: 500px;
+            perspective: 1200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            background-color: #2b2b2b;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .tardis-scene .shadow {
+            position: absolute;
+            bottom: 70px;
+            width: 220px;
+            height: 80px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 50%;
+            filter: blur(15px);
+            z-index: -1;
+        }
+        .tardis {
+            position: relative;
+            width: 180px;
+            height: 360px;
+            transform-style: preserve-3d;
+            animation: tardis-rotate 12s infinite linear;
+        }
+        .tardis .face {
+            position: absolute;
+            background-color: #4b6b9a;
+            border: 2px solid #1e2a3a;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            backface-visibility: hidden;
+        }
+		
+        .base-3d {
+            position: absolute; bottom: 0; left: -5px; width: 190px; height: 10px;
+            transform-style: preserve-3d;
+        }
+        .base-3d .front  { width: 190px; height: 10px; transform: translateZ(95px); }
+        .base-3d .back   { width: 190px; height: 10px; transform: rotateY(180deg) translateZ(95px); }
+        .base-3d .left   { width: 190px; height: 10px; transform: rotateY(-90deg) translateZ(95px); filter: brightness(0.8); }
+        .base-3d .right  { width: 190px; height: 10px; transform: rotateY(90deg) translateZ(95px); filter: brightness(0.6); }
+        .base-3d .top    { width: 190px; height: 190px; transform: rotateX(90deg) translateZ(5px); background-color: #1e2a3a; }
+        
+        .body-3d {
+            position: absolute; bottom: 10px; left: 0; width: 180px; height: 280px;
+            transform-style: preserve-3d;
+        }
+        .body-3d .front  { width: 180px; height: 280px; transform: translateZ(90px); padding: 12px; }
+        .body-3d .back   { width: 180px; height: 280px; transform: rotateY(180deg) translateZ(90px); padding: 12px; filter: brightness(0.6); }
+        .body-3d .left   { width: 180px; height: 280px; transform: rotateY(-90deg) translateZ(90px); padding: 12px; filter: brightness(0.8); }
+        .body-3d .right  { width: 180px; height: 280px; transform: rotateY(90deg) translateZ(90px); padding: 12px; filter: brightness(0.6); }
+        .body-3d .top    { width: 180px; height: 180px; transform: rotateX(90deg) translateZ(140px); background-color: #1e2a3a; }
+        
+        .roof1-3d {
+            position: absolute; bottom: 290px; left: -10px; width: 200px; height: 20px;
+            transform-style: preserve-3d;
+        }
+        .roof1-3d .front  { width: 200px; height: 20px; transform: translateZ(100px); }
+        .roof1-3d .back   { width: 200px; height: 20px; transform: rotateY(180deg) translateZ(100px); filter: brightness(0.6); }
+        .roof1-3d .left   { width: 200px; height: 20px; transform: rotateY(-90deg) translateZ(100px); filter: brightness(0.8); }
+        .roof1-3d .right  { width: 200px; height: 20px; transform: rotateY(90deg) translateZ(100px); filter: brightness(0.6); }
+        .roof1-3d .top    { width: 200px; height: 200px; transform: rotateX(90deg) translateZ(10px); background-color: #1e2a3a; }
+        
+        .roof2-3d {
+            position: absolute; bottom: 310px; left: 5px; width: 170px; height: 20px;
+            transform-style: preserve-3d;
+        }
+        .roof2-3d .front  { width: 170px; height: 20px; transform: translateZ(85px); }
+        .roof2-3d .back   { width: 170px; height: 20px; transform: rotateY(180deg) translateZ(85px); filter: brightness(0.6); }
+        .roof2-3d .left   { width: 170px; height: 20px; transform: rotateY(-90deg) translateZ(85px); filter: brightness(0.8); }
+        .roof2-3d .right  { width: 170px; height: 20px; transform: rotateY(90deg) translateZ(85px); filter: brightness(0.6); }
+        .roof2-3d .top    { width: 170px; height: 170px; transform: rotateX(90deg) translateZ(10px); background-color: #1e2a3a; }
+      
+        .lantern-3d {
+            position: absolute; bottom: 330px; left: 70px; width: 40px; height: 30px;
+            transform-style: preserve-3d;
+        }
+        .lantern-3d .face { background-color: #ffffff; border-color: #cccccc; }
+        .lantern-3d .front  { width: 40px; height: 30px; transform: translateZ(20px); }
+        .lantern-3d .back   { width: 40px; height: 30px; transform: rotateY(180deg) translateZ(20px); filter: brightness(0.8); }
+        .lantern-3d .left   { width: 40px; height: 30px; transform: rotateY(-90deg) translateZ(20px); filter: brightness(0.9); }
+        .lantern-3d .right  { width: 40px; height: 30px; transform: rotateY(90deg) translateZ(20px); filter: brightness(0.7); }
+        .lantern-3d .top    { width: 40px; height: 40px; transform: rotateX(90deg) translateZ(15px); }
+
+        .sign {
+            background-color: #1a2536; color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold; font-size: 9px; text-align: center;
+            padding: 4px 0; border: 1px solid #ffffff; margin-bottom: 12px;
+            line-height: 1.2; text-transform: uppercase; letter-spacing: 1px; z-index: 2;
+        }
+        .doors { display: flex; gap: 8px; flex: 1; }
+        .door {
+            flex: 1; background-color: #42608c; border: 2px solid #2F466B;
+            display: flex; flex-direction: column; padding: 6px;
+        }
+        .window {
+            height: 45px; background-color: #1a2536; border: 2px solid #ffffff;
+            display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr);
+            gap: 2px; padding: 2px; margin-bottom: 8px;
+        }
+        .side-window { grid-template-columns: repeat(2, 1fr); }
+        .pane { background-color: #dbe4ef; }
+        .panel {
+            flex: 1; margin-bottom: 8px; background-color: #3a557a;
+            border: 2px solid #2F466B; position: relative;
+        }
+        .panel:last-child { margin-bottom: 0; }
+        .panel::after {
+            content: ''; position: absolute;
+            top: 3px; left: 3px; right: 3px; bottom: 3px;
+            border: 1px solid #2F466B; background-color: #4b6b9a;
+        }
+        .side-door {
+            flex: 1; background-color: #355073; border: 2px solid #2F466B;
+            display: flex; flex-direction: column; padding: 6px;
+        }
+        .side-sign { font-size: 7px; padding: 3px 0; margin-bottom: 10px; }
+
+        @keyframes tardis-rotate {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="project-wrapper">
+        <div class="project-title">Анимация 1 — Мордочка котика</div>
+        <div class="cat-container">
+            <svg class="ear left" viewBox="0 0 99 185" aria-hidden="true">
+                <path fill="#fff" d="M34 11 L40 13 L45 19 L49 25 L52 31 L55 37 L58 43 L61 49 L64 55 L67 61 L70 67 L72 73 L74 79 L76 85 L78 91 L80 97 L82 103 L84 109 L85 115 L80 118 L77 109 L74 115 L72 116 L66 115 L66 118 L69 121 L74 124 L68 129 L62 135 L56 141 L51 147 L47 153 L43 159 L39 165 L35 171 L29 176 L25 174 L23 165 L21 156 L19 147 L17 138 L16 129 L15 120 L14 111 L13 102 L12 93 L11 84 L11 75 L12 66 L12 57 L13 48 L15 39 L17 33 L21 24 L25 18 L30 13 Z"/>
+            </svg>
+            <svg class="ear right" viewBox="0 0 99 185" aria-hidden="true">
+                <path fill="#fff" d="M34 11 L40 13 L45 19 L49 25 L52 31 L55 37 L58 43 L61 49 L64 55 L67 61 L70 67 L72 73 L74 79 L76 85 L78 91 L80 97 L82 103 L84 109 L85 115 L80 118 L77 109 L74 115 L72 116 L66 115 L66 118 L69 121 L74 124 L68 129 L62 135 L56 141 L51 147 L47 153 L43 159 L39 165 L35 171 L29 176 L25 174 L23 165 L21 156 L19 147 L17 138 L16 129 L15 120 L14 111 L13 102 L12 93 L11 84 L11 75 L12 66 L12 57 L13 48 L15 39 L17 33 L21 24 L25 18 L30 13 Z"/>
+            </svg>
+            <div class="eye left"><div class="pupil"></div></div>
+            <div class="eye right"><div class="pupil"></div></div>
+            <div class="nose"></div>
+            <div class="mouth"></div>
+        </div>
+    </div>
+    <div class="project-wrapper">
+        <div class="project-title">Анимация 16 — Часы</div>
+        <div class="clock-card">
+            <div class="title">Время</div>
+            <div class="clock-container">
+                <img src="images/1.jpg" alt="Циферблат" class="clock-face">
+                <div class="clock-center">
+                    <div class="hand hour-hand"></div>
+                    <div class="hand minute-hand"></div>
+                    <div class="hand second-hand"></div>
+                </div>
+                <div class="center-dot"></div>
+            </div>
+        </div>
+    </div>
+    <div class="project-wrapper">
+        <div class="project-title">Анимация 4 — Космонавт</div>
+        <div class="space-container">
+            <div class="space-circle">
+                <div class="star"></div>
+                <div class="star"></div>
+                <div class="star"></div>
+                <div class="star"></div>
+                <div class="star"></div>
+
+                <div class="planet">
+                    <div class="planet-cloud cloud-1"></div>
+                    <div class="planet-cloud cloud-2"></div>
+                    <div class="planet-cloud cloud-3"></div>
+                    <div class="planet-cloud cloud-4"></div>
+                </div>
+
+                <div class="astronaut">
+                    <div class="backpack"></div>
+                    <div class="leg-left"></div>
+                    
+                    <div class="body">
+                        <div class="btn btn-blue"></div>
+                        <div class="btn btn-red"></div>
+                        <div class="btn btn-yellow"></div>
+                    </div>
+                    
+                    <div class="arm-left">
+                        <div class="upper"></div>
+                        <div class="lower"></div>
+                    </div>
+
+                    <svg class="tether-svg" viewBox="0 0 100 150">
+                        <path d="M 50 90 C 130 160, 150 40, 75 75" stroke="#4c6cd7" stroke-width="6" fill="none" stroke-linecap="round" />
+                    </svg>
+
+                    <div class="leg-right">
+                        <div class="thigh"></div>
+                        <div class="calf"></div>
+                    </div>
+
+                    <div class="helmet">
+                        <div class="visor"></div>
+                    </div>
+                    
+                    <div class="arm-right">
+                        <div class="upper"></div>
+                        <div class="lower"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="project-wrapper">
+        <div class="project-title">Анимация 22 — 3D TARDIS</div>
+        <div class="tardis-scene">
+            <div class="shadow"></div>
+            <div class="tardis">
+                <div class="base-3d">
+                    <div class="face front"></div>
+                    <div class="face back"></div>
+                    <div class="face left"></div>
+                    <div class="face right"></div>
+                    <div class="face top"></div>
+                </div>
+                <div class="body-3d">
+                    <div class="face front">
+                        <div class="sign">POLICE<br>BOX</div>
+                        <div class="doors">
+                            <div class="door">
+                                <div class="window">
+                                    <div class="pane"></div><div class="pane"></div><div class="pane"></div>
+                                    <div class="pane"></div><div class="pane"></div><div class="pane"></div>
+                                </div>
+                                <div class="panel"></div>
+                                <div class="panel"></div>
+                                <div class="panel"></div>
+                            </div>
+                            <div class="door">
+                                <div class="window">
+                                    <div class="pane"></div><div class="pane"></div><div class="pane"></div>
+                                    <div class="pane"></div><div class="pane"></div><div class="pane"></div>
+                                </div>
+                                <div class="panel"></div>
+                                <div class="panel"></div>
+                                <div class="panel"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="face back">
+                        <div class="sign">POLICE<br>BOX</div>
+                        <div class="doors">
+                            <div class="door">
+                                <div class="window">
+                                    <div class="pane"></div><div class="pane"></div><div class="pane"></div>
+                                    <div class="pane"></div><div class="pane"></div><div class="pane"></div>
+                                </div>
+                                <div class="panel"></div>
+                                <div class="panel"></div>
+                                <div class="panel"></div>
+                            </div>
+                            <div class="door">
+                                <div class="window">
+                                    <div class="pane"></div><div class="pane"></div><div class="pane"></div>
+                                    <div class="pane"></div><div class="pane"></div><div class="pane"></div>
+                                </div>
+                                <div class="panel"></div>
+                                <div class="panel"></div>
+                                <div class="panel"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="face left">
+                        <div class="sign side-sign">POLICE<br>BOX</div>
+                        <div class="side-door">
+                            <div class="window side-window">
+                                <div class="pane"></div><div class="pane"></div>
+                                <div class="pane"></div><div class="pane"></div>
+                            </div>
+                            <div class="panel"></div>
+                            <div class="panel"></div>
+                            <div class="panel"></div>
+                        </div>
+                    </div>
+                    <div class="face right">
+                        <div class="sign side-sign">POLICE<br>BOX</div>
+                        <div class="side-door">
+                            <div class="window side-window">
+                                <div class="pane"></div><div class="pane"></div>
+                                <div class="pane"></div><div class="pane"></div>
+                            </div>
+                            <div class="panel"></div>
+                            <div class="panel"></div>
+                            <div class="panel"></div>
+                        </div>
+                    </div>
+                    <div class="face top"></div>
+                </div>
+                <div class="roof1-3d">
+                    <div class="face front"></div>
+                    <div class="face back"></div>
+                    <div class="face left"></div>
+                    <div class="face right"></div>
+                    <div class="face top"></div>
+                </div>
+                <div class="roof2-3d">
+                    <div class="face front"></div>
+                    <div class="face back"></div>
+                    <div class="face left"></div>
+                    <div class="face right"></div>
+                    <div class="face top"></div>
+                </div>
+                <div class="lantern-3d">
+                    <div class="face front"></div>
+                    <div class="face back"></div>
+                    <div class="face left"></div>
+                    <div class="face right"></div>
+                    <div class="face top"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
